@@ -113,14 +113,14 @@ def take_update():
     elif (park_id == 'D08') :
                position = 48
     else :
-               position = null 
+               position = None 
            
-    print ("position = %d" % \
-                  (position))
 
-    if (position == null) :
+    if (position == None) :
         print ("Sorry, Our park is FULL!!!")
-    else :    
+    else :
+        print ("position = %d" % \
+                  (position))
         sql = "UPDATE park SET park_status = '%s' WHERE park_id = '%s' " % ('Busy', park_id)
         cursor.execute(sql)
         db.commit()
@@ -129,7 +129,6 @@ def take_update():
                     (park_id,'Busy'))
 
         db.close()
-
 
 button.when_pressed = take_photo
 flag = 0
