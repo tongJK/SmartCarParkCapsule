@@ -1,3 +1,4 @@
+
 #Smart Car Park Capsule By sinister_30N4
 #!/usr/bin/python
 
@@ -121,9 +122,28 @@ def take_update():
     else :
         print ("position = %d" % \
                   (position))
+
+        global nowtime
+        nowtime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+
         sql = "UPDATE park SET park_status = '%s' WHERE park_id = '%s' " % ('Busy', park_id)
         cursor.execute(sql)
+
+        sql1 = "INSERT INTO carstatus(park_id, car_pic, time_in) \
+                 VALUES ('%s', '%s', '%s' )" % \
+       ( park_id, park_id,nowtime)
+        cursor.execute(sql1)
+
+        sql2 = "INSERT INTO payment(park_id, time_in, amount) \
+                 VALUES ('%s', '%s', %d )" % \
+       ( park_id,nowtime, 0)
+        cursor.execute(sql2)
+
+        
         db.commit()
+
+
     
         print ("Now Slot %s is  = %s" % \
                     (park_id,'Busy'))
@@ -131,5 +151,7 @@ def take_update():
         db.close()
 
 button.when_pressed = take_photo
-flag = 0
+print ("Ready !!")
 
+while True:
+    sleep (1)
