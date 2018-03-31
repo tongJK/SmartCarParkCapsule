@@ -1,8 +1,10 @@
 from tkinter import *
-import tkinter as tk
 from tkinter import messagebox
-import time
 from PIL import Image, ImageTk
+import tkinter as tk
+import MySQLdb
+import time
+
 
 # --- Variables Section ------------------------------------------------------------------------------------------------
 otp = None
@@ -18,6 +20,8 @@ def take_update():
 def show_entry_fields():
     global otp
     otp = e1.get()
+    e1.delete(0, 'end')
+    
     if otp == '1234':
         messagebox.showinfo("Contact Us", "Your OTP is Accept\nClick OK to continue.")
         take_update()
@@ -28,6 +32,11 @@ def show_entry_fields():
 def show_contact():
     messagebox.showinfo("Contact Us",
                         "Tel : 0808894575 \nWebsite : www.smartcarpark.com \nE-mail : tong_ueki@hotmail.com")
+
+def show_link():
+    messagebox.showinfo("Smart Car App",
+                        'Android : https://play.google.com/store/apps/SmartCarParkApp '
+                        '\n\n\nIOS : https://www.apple.com/th/ios/app-store/SmartCarParkApp ')
 
 
 
@@ -120,13 +129,18 @@ class PageOne(tk.Frame):
         label = tk.Label(self, text="3.Scan QR Code with Smart Car Park", bg="lightskyblue", font=("Times", 40, "bold italic"))
         label.pack(side="top", fill="x", pady=10)
 
-        button = tk.Button(self, text="Car Deposit", bd=15, font=("Times", 100, "bold italic"), bg="dodgerblue",
+        button = tk.Button(self, text="Get QR Code", bd=15, font=("Times", 100, "bold italic"), bg="dodgerblue",
                             command=lambda: time.sleep(10) & controller.show_frame("PageQR"))
         button.pack(pady=(10, 10))
 
+        button = tk.Button(self, text="Get Smart Car App", font=("Times", 15, "bold"), bd=10, bg="tomato", height=3,
+                           width=15, command=show_link)
+        button.pack(side=RIGHT)
+
+
         button = tk.Button(self, text="Go to the start page", font=("Times", 15, "bold"), bd=10, bg="tomato", height=3,
                            width=15, command=lambda:controller.show_frame("StartPage"))
-        button.pack()
+        button.pack(side=RIGHT)
 
 
 class PageTwo(tk.Frame):
