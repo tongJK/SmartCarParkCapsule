@@ -1,8 +1,8 @@
 from tkinter import *
-import tkinter as tk                # python 3
-from tkinter import font  as tkfont # python 3
+import tkinter as tk
 from tkinter import messagebox
 import time
+from PIL import Image, ImageTk
 
 # --- Variables Section ------------------------------------------------------------------------------------------------
 
@@ -27,28 +27,15 @@ def show_contact():
     messagebox.showinfo("Contact Us",
                         "Tel : 0808894575 \nWebsite : www.smartcarpark.com \nE-mail : tong_ueki@hotmail.com")
 
-def show_qr():
-    # time.sleep(30)
-    messagebox.showinfo("QR Code",
-                        "Your QR Code is :\nScan to see your car details.")
 
-    logo = PhotoImage(file="C:\Users\Tong\Desktop\default_qrcode.png")
-    w2 = Label(root, image=logo).grid(row=0, column=1)
-    explanation = """Team Geo Zoner"""
-    w2 = Label(root, compound=CENTER, fg="Red", bg="black", font="Times 55 bold", text=explanation)
-    w2.grid(row=0, column=0)
 
-    mainloop()
-
-# --- Class Section -------------------------------------------------------------------------------------------------
+    # --- Class Section -------------------------------------------------------------------------------------------------
 
 class SampleApp(tk.Tk):
 
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
 
-
-        self.title_font = tkfont.Font(family='Helvetica', size=18, weight="bold", slant="italic")
 
         # the container is where we'll stack a bunch of frames
         # on top of each other, then the one we want visible
@@ -59,7 +46,7 @@ class SampleApp(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for F in (StartPage, PageOne, PageTwo):
+        for F in (StartPage, PageOne, PageTwo, PageQR):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -75,6 +62,7 @@ class SampleApp(tk.Tk):
         '''Show a frame for the given page name'''
         frame = self.frames[page_name]
         frame.tkraise()
+
 
 
 class StartPage(tk.Frame):
@@ -100,6 +88,7 @@ class StartPage(tk.Frame):
                        font=("Times", 10, "bold italic"))
         lb2.pack(side="bottom")
 
+
         button1 = tk.Button(self, text="Car Deposit", bd=15, font=("Times", 100, "bold italic"), bg="dodgerblue",
                             command=lambda: controller.show_frame("PageOne"))
         button2 = tk.Button(self, text="Retake Car", bd=15, font=("Times", 100, "bold italic"), bg="coral",
@@ -109,6 +98,7 @@ class StartPage(tk.Frame):
 
 
 class PageOne(tk.Frame):
+
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent, bg="lightskyblue")
@@ -128,13 +118,14 @@ class PageOne(tk.Frame):
         label = tk.Label(self, text="3.Scan QR Code with Smart Car Park", bg="lightskyblue", font=("Times", 40, "bold italic"))
         label.pack(side="top", fill="x", pady=10)
 
-        button = tk.Button(self, text="OK", font=("Times", 15, "bold"), bd=10, bg="tomato", height=3,
-                           width=15, command=show_qr)
+        button = tk.Button(self, text="Car Deposit", bd=15, font=("Times", 100, "bold italic"), bg="dodgerblue",
+                            command=lambda: time.sleep(10) & controller.show_frame("PageQR"))
         button.pack(pady=(10, 10))
 
         button = tk.Button(self, text="Go to the start page", font=("Times", 15, "bold"), bd=10, bg="tomato", height=3,
-                           width=15, command=lambda: controller.show_frame("StartPage"))
+                           width=15, command=lambda:controller.show_frame("StartPage"))
         button.pack()
+
 
 class PageTwo(tk.Frame):
 
@@ -156,6 +147,27 @@ class PageTwo(tk.Frame):
                            command=lambda: controller.show_frame("StartPage"))
         button.pack()
 
+
+class PageQR(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent, bg="lightskyblue")
+        self.controller = controller
+        label = tk.Label(self, text="Your OTP is", bg="salmon", font=("Times", 80, "bold italic"))
+        label.pack(side="top", fill="x", pady=10)
+
+        load = Image.open("qrcode.png")
+        render = ImageTk.PhotoImage(load)
+
+        # labels can be text or images
+        img = Label(self, image=render)
+        img.image = render
+        img.place(x=770, y=200)
+
+        button = tk.Button(self, text="Go to the start page", font=("Times", 15, "bold"), bd=10, bg="tomato", height=5,
+                           width=30,
+                           command=lambda: controller.show_frame("StartPage"))
+        button.pack(pady=(600, 10))
 
 # --- Main Section -------------------------------------------------------------------------------------------------
 if __name__ == "__main__":
