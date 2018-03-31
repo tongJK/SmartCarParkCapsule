@@ -5,7 +5,7 @@ import time
 from PIL import Image, ImageTk
 
 # --- Variables Section ------------------------------------------------------------------------------------------------
-
+otp = None
 # --- Function Section -------------------------------------------------------------------------------------------------
 
 def writeNumber(value):
@@ -16,12 +16,14 @@ def take_update():
     print("OTP is %s" % e1.get())
 
 def show_entry_fields():
+    global otp
+    otp = e1.get()
     if otp == '1234':
         messagebox.showinfo("Contact Us", "Your OTP is Accept\nClick OK to continue.")
         take_update()
     else:
         messagebox.showerror("Error", "Your OTP is wrong, Please Re-Enter or contact us")
-        print("OTP is %s" % e1.get)
+        print("OTP is %s" % otp)
 
 def show_contact():
     messagebox.showinfo("Contact Us",
@@ -29,7 +31,7 @@ def show_contact():
 
 
 
-    # --- Class Section -------------------------------------------------------------------------------------------------
+# --- Class Section ----------------------------------------------------------------------------------------------------
 
 class SampleApp(tk.Tk):
 
@@ -130,6 +132,8 @@ class PageOne(tk.Frame):
 class PageTwo(tk.Frame):
 
     def __init__(self, parent, controller):
+
+        global e1
         tk.Frame.__init__(self, parent, bg="lightskyblue")
         self.controller = controller
         label = tk.Label(self, text="Please enter your OTP number", bg="salmon", font=("Times", 80, "bold italic"))
@@ -165,11 +169,11 @@ class PageQR(tk.Frame):
         img.place(x=770, y=200)
 
         button = tk.Button(self, text="Go to the start page", font=("Times", 15, "bold"), bd=10, bg="tomato", height=5,
-                           width=30,
-                           command=lambda: controller.show_frame("StartPage"))
+                           width=30, command=lambda: controller.show_frame("StartPage"))
         button.pack(pady=(600, 10))
 
 # --- Main Section -------------------------------------------------------------------------------------------------
+
 if __name__ == "__main__":
     app = SampleApp()
     app.title("Smart Car Park.")
