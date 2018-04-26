@@ -3,16 +3,24 @@
 #!/usr/bin/python
 
 import MySQLdb
+import smbus
+import time
 from picamera import PiCamera
 from datetime import datetime
 from time import sleep
 from gpiozero import Button
 
+
+bus = smbus.SMBus(1)
+address = 0x04
 camera = PiCamera()
 button = Button(14)
 
 flag = 0
 filename = ''
+position = 2
+floor = 0
+slot = 0
 
 def take_photo():
     global filename
@@ -25,6 +33,14 @@ def take_photo():
     print("Now flag = ",flag + 1)
     take_update()
 
+
+def writeNumber(value):
+    bus.write_byte(address, value)
+    return -1
+
+def readNumber():
+    number = bus.read_byte(address)
+    return number
 
 def take_update():
     # Open database connection
@@ -50,78 +66,110 @@ def take_update():
                 (park_id,park_status))
 
     if (park_id == 'A01') :
-               position = 11
+               floor = 49
+               slot = 49
     elif (park_id == 'A02') :
-               position = 12
+               floor = 49
+               slot = 50
     elif (park_id == 'A03') :
-               position = 13
+               floor = 49
+               slot = 51
     elif (park_id == 'A04') :
-               position = 14
+               floor = 49
+               slot = 52
     elif (park_id == 'A05') :
-               position = 15
+               floor = 49
+               slot = 53
     elif (park_id == 'A06') :
-               position = 16
+               floor = 49
+               slot = 54
     elif (park_id == 'A07') :
-               position = 17
+               floor = 49
+               slot = 55
     elif (park_id == 'A08') :
-               position = 18
+               floor = 49
+               slot = 56
     elif (park_id == 'B01') :
-               position = 21
+               floor = 50
+               slot = 49
     elif (park_id == 'B02') :
-               position = 22
+               floor = 50
+               slot = 50
     elif (park_id == 'B03') :
-               position = 23
+               floor = 50
+               slot = 51
     elif (park_id == 'B04') :
-               position = 24
+               floor = 50
+               slot = 52
     elif (park_id == 'B05') :
-               position = 25
+               floor = 50
+               slot = 53
     elif (park_id == 'B06') :
-               position = 26
+               floor = 50
+               slot = 54
     elif (park_id == 'B07') :
-               position = 27
+               floor = 50
+               slot = 55
     elif (park_id == 'B08') :
-               position = 28
+               floor = 50
+               slot = 56
     elif (park_id == 'C01') :
-               position = 31
+               floor = 51
+               slot = 49
     elif (park_id == 'C02') :
-               position = 32
+              floor = 51
+              slot = 50
     elif (park_id == 'C03') :
-               position = 33
+               floor = 51
+               slot = 51
     elif (park_id == 'C04') :
-               position = 34
+               floor = 51
+               slot = 52
     elif (park_id == 'C05') :
-               position = 35
+               floor = 51
+               slot = 53
     elif (park_id == 'C06') :
-               position = 36
+               floor = 51
+               slot = 54
     elif (park_id == 'C07') :
-               position = 37
+               floor = 51
+               slot = 55
     elif (park_id == 'C08') :
-               position = 38
+               floor = 51
+               slot = 56
     elif (park_id == 'D01') :
-               position = 41
+               floor = 52
+               slot = 49
     elif (park_id == 'D02') :
-               position = 42
+               floor = 52
+               slot = 50
     elif (park_id == 'D03') :
-               position = 43
+               floor = 52
+               slot = 51
     elif (park_id == 'D04') :
-               position = 44
+               floor = 52
+               slot = 52
     elif (park_id == 'D05') :
-               position = 45
+               floor = 52
+               slot = 53
     elif (park_id == 'D06') :
-               position = 46
+               floor = 52
+               slot = 54
     elif (park_id == 'D07') :
-               position = 47
+               floor = 52
+               slot = 55
     elif (park_id == 'D08') :
-               position = 48
+               floor = 52
+               slot = 56
     else :
-               position = None 
+               floor = None 
            
 
-    if (position == None) :
+    if (floor == None) :
         print ("Sorry, Our park is FULL!!!")
     else :
-        print ("position = %d" % \
-                  (position))
+        print ("Floor : %d Slot : %d" % \
+                  (floor, slot))
 
         global nowtime
         nowtime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -147,11 +195,28 @@ def take_update():
     
         print ("Now Slot %s is  = %s" % \
                     (park_id,'Busy'))
+        print(" ---------------------------------------- ")
 
         db.close()
+
+        data_list = list(chr(floor))
+        data_list2 = list(chr(slot))
+        for i in data_list:
+            #Sends to the Slaves
+            writeNumber(ord(i))
+            time.sleep(.1)
+
+            writeNumber(int(0x0A))
+
+        for i in data_list2:
+            #Sends to the Slaves
+            writeNumber(ord(i))
+            time.sleep(.1)
+
+            writeNumber(int(0x0A))
 
 button.when_pressed = take_photo
 print ("Ready !!")
 
-while True:
+while True:  
     sleep (1)
