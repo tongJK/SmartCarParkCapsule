@@ -29,8 +29,6 @@ def take_photo():
     sleep(1)
     camera.capture("/home/pi/SCPpic/{0}".format(filename))
     camera.stop_preview()
-    print("Old Flag = ",flag)
-    print("Now flag = ",flag + 1)
 
 
 def writeNumber(value):
@@ -169,14 +167,14 @@ def take_update():
         print ("Sorry, Our park is FULL!!!")
     else :
         print ("Floor : %d Slot : %d" % \
-                  (floor, slot))
+                  (floor-48, slot-48))
 
         global nowtime
         nowtime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 
-        #sql = "UPDATE park SET park_status = '%s' WHERE park_id = '%s' " % ('Busy', park_id)
-        #cursor.execute(sql)
+        sql = "UPDATE park SET park_status = '%s' WHERE park_id = '%s' " % ('Busy', park_id)
+        cursor.execute(sql)
 
         sql1 = "INSERT INTO carstatus(park_id, car_pic, time_in) \
                  VALUES ('%s', '%s', '%s' )" % \
