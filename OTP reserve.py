@@ -136,10 +136,10 @@ class StartPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent, bg="lightskyblue")
         self.controller = controller
-        label = tk.Label(self, text="Wellcome !!", fg="hot pink", bg="lightskyblue", font=("Times", 80, "bold italic"))
+        label = tk.Label(self, text="Wellcome !!", fg="hot pink", bg="lightskyblue", font=("Times", 60, "bold italic"))
         label.pack(side="top", fill="x", pady=10)
 
-        lb2 = tk.Label(self, text="Smart Car Park", fg="hot pink", bg="lightskyblue", font=("Times", 80, "bold italic"))
+        lb2 = tk.Label(self, text="Smart Car Park", fg="hot pink", bg="lightskyblue", font=("Times", 60, "bold italic"))
         lb2.pack(side="top", fill="x", pady=10)
 
         label = tk.Label(self, text="1.Park your car in receive slot, lock your car", bg="lightskyblue",
@@ -155,9 +155,9 @@ class StartPage(tk.Frame):
         lb2.pack(side="bottom")
 
 
-        button1 = tk.Button(self, text="Car Deposit", bd=15, font=("Times", 100, "bold italic"), bg="dodgerblue",
+        button1 = tk.Button(self, text="Car Deposit", bd=15, font=("Times", 70, "bold italic"), bg="dodgerblue",
                             command=lambda: controller.show_frame("PageOne"))
-        button2 = tk.Button(self, text="Retake Car", bd=15, font=("Times", 100, "bold italic"), bg="coral",
+        button2 = tk.Button(self, text="Retake Car", bd=15, font=("Times", 70, "bold italic"), bg="coral",
                             command=lambda: controller.show_frame("PageTwo"))
         button1.pack(pady=(10, 10))
         button2.pack(pady=(10, 10))
@@ -169,31 +169,31 @@ class PageOne(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent, bg="lightskyblue")
         self.controller = controller
-        label = tk.Label(self, text="Car Deposit", bg="lightskyblue", font=("Times", 100, "bold italic"))
+        label = tk.Label(self, text="Car Deposit", bg="lightskyblue", font=("Times", 60, "bold italic"))
         label.pack(side="top", fill="x", pady=10)
 
-        label = tk.Label(self, text="Direction", bg="lightskyblue", font=("Times", 80, "bold italic"))
+        label = tk.Label(self, text="Direction", bg="lightskyblue", font=("Times", 60, "bold italic"))
         label.pack(side="top", fill="x", pady=10)
 
-        label = tk.Label(self, text="1.Install Smart Car Park & Scanner application", bg="lightskyblue", font=("Times", 40, "bold italic"))
+        label = tk.Label(self, text="1.Install Smart Car Park & Scanner application", bg="lightskyblue", font=("Times", 30, "bold italic"))
         label.pack(side="top", fill="x", pady=10)
 
-        label = tk.Label(self, text="2.click 'Get QR Code' button and wait a moment", bg="lightskyblue", font=("Times", 40, "bold italic"))
+        label = tk.Label(self, text="2.click 'Get QR Code' button and wait a moment", bg="lightskyblue", font=("Times", 30, "bold italic"))
         label.pack(side="top", fill="x", pady=10)
 
-        label = tk.Label(self, text="3.Scan QR Code with Smart Car Park", bg="lightskyblue", font=("Times", 40, "bold italic"))
+        label = tk.Label(self, text="3.Scan QR Code with Smart Car Park", bg="lightskyblue", font=("Times", 30, "bold italic"))
         label.pack(side="top", fill="x", pady=10)
 
-        button = tk.Button(self, text="Get QR Code", bd=15, font=("Times", 100, "bold italic"), bg="dodgerblue",
+        button = tk.Button(self, text="Get QR Code", bd=15, font=("Times", 60, "bold italic"), bg="dodgerblue",
                             command=lambda: time.sleep(10) & controller.show_frame("PageQR"))
         button.pack(pady=(10, 10))
 
-        button = tk.Button(self, text="Get Smart Car App", font=("Times", 15, "bold"), bd=10, bg="tomato", height=3,
+        button = tk.Button(self, text="Get Smart Car App", font=("Times", 15, "bold"), bd=10, bg="tomato", height=2,
                            width=15, command=show_link)
         button.pack(side=RIGHT)
 
 
-        button = tk.Button(self, text="Go to the start page", font=("Times", 15, "bold"), bd=10, bg="tomato", height=3,
+        button = tk.Button(self, text="Go to the start page", font=("Times", 15, "bold"), bd=10, bg="tomato", height=2,
                            width=15, command=lambda:controller.show_frame("StartPage"))
         button.pack(side=RIGHT)
 
@@ -204,19 +204,19 @@ class PageTwo(tk.Frame):
         global e1
         tk.Frame.__init__(self, parent, bg="lightskyblue")
         self.controller = controller
-        label = tk.Label(self, text="Please enter your OTP number", bg="lightskyblue", font=("Times", 80, "bold italic"))
+        label = tk.Label(self, text="Please enter your OTP number", bg="lightskyblue", font=("Times", 50, "bold italic"))
         label.pack(side="top", fill="x", pady=10)
 
-        e1 = Entry(self, width=20, bd=5, font=("Times", 50, "bold italic"), justify=CENTER)
+        e1 = Entry(self, width=20, bd=5, font=("Times", 40, "bold italic"), justify=CENTER)
         e1.pack(pady=(10, 10))
         e1.bind("<Return>", (lambda event: show_entry_fields(e1.get())))
 
-        tk.Button(self, text='Submit', font=("Times", 20, "bold italic"), command=show_entry_fields,
+        tk.Button(self, text='Submit', font=("Times", 15, "bold italic"), command=show_entry_fields,
                   bd=10, bg="limegreen", height=5, width=30).pack(pady=(10, 10))
-        tk.Button(self, text='Contact Us', font=("Times", 20, "bold italic"), command=show_contact,
-                  bd=10, bg="mediumspringgreen", height=5, width=30).pack(pady=(10, 100))
+        tk.Button(self, text='Contact Us', font=("Times", 15, "bold italic"), command=show_contact,
+                  bd=10, bg="mediumspringgreen", height=5, width=20).pack(pady=(10, 100))
 
-        button = tk.Button(self, text="Go to the start page", font=("Times", 15, "bold"), bd=10, bg="tomato", height=5,
+        button = tk.Button(self, text="Go to the start page", font=("Times", 10, "bold"), bd=10, bg="tomato", height=5,
                            width=30,
                            command=lambda: controller.show_frame("StartPage"))
         button.pack()
@@ -227,11 +227,11 @@ class PageQR(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent, bg="lightskyblue")
         self.controller = controller
-        label = tk.Label(self, text="Your QR Code is below", bg="lightskyblue", font=("Times", 60, "bold italic"))
+        label = tk.Label(self, text="Your QR Code is below", bg="lightskyblue", font=("Times", 40, "bold italic"))
         label.pack(side="top", fill="x", pady=10)
 
         label = tk.Label(self, text="(Scan with Smart Car Park App for register or login)", bg="lightskyblue",
-                         font=("Times", 40, "bold italic"))
+                         font=("Times", 30, "bold italic"))
         label.pack(side="top", fill="x", pady=10)
 
         load = Image.open("qrcode.png")
@@ -240,11 +240,11 @@ class PageQR(tk.Frame):
         # labels can be text or images
         img = Label(self, image=render)
         img.image = render
-        img.place(x=770, y=250)
+        img.place(x=300, y=200)
 
-        button = tk.Button(self, text="Click when Done", font=("Times", 50, "bold"), bd=10, bg="tomato", height=5,
+        button = tk.Button(self, text="Click when Done", font=("Times", 20, "bold"), bd=10, bg="tomato", height=5,
                            width=20, command=lambda: controller.show_frame("StartPage"))
-        button.pack(pady=(600, 10))
+        button.pack(pady=(450, 10))
 
 # --- Main Section -------------------------------------------------------------------------------------------------
 
