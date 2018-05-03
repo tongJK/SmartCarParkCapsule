@@ -14,11 +14,13 @@ int sleep = 1;
 int wait = 1000;
 int numstep_x = 4000 ;
 int numstep_z ;
-int numstep_plate ;
+int numstep_plate = 25;
 int microstep = 200;
 
 char ch;
 int i,j;
+int flr;
+int slt;
 
 
 void z_slot(char ch);
@@ -39,11 +41,24 @@ void setup(){
 void loop(){
    ch = Serial.read();   
    z_slot(ch);   
+
+   flr = ch/10;
+   slt = ch%10;
+   
+   if(flr == 1)
+     numstep_z = 0;
+   if(flr == 2)
+     numstep_z = 2200;
+   if(flr == 3)
+     numstep_z = 4400;
+   if(flr == 4)
+     numstep_z = 6600;
+
+   numstep_plate = numstep_plate*slt ;
 }
 
 void z_slot(char ch){
-    if(ch == 'a'){
-    numstep_z = 2200;
+  
       fslide();
       delay(sleep);
       pickup();
@@ -81,130 +96,7 @@ void z_slot(char ch){
     }
     
        plateround_back();
-}
 
-    if(ch == 'b'){
-    numstep_z = 4400;
-      fslide();
-      delay(sleep);
-      pickup();
-      delay(wait);
-      bslide();
-      delay(sleep);
-      plateround();
-      delay(wait);
-        
-      //up
-       digitalWrite(DIR1_PIN,HIGH);
-       for(int i=0;i<numstep_z;i++){
-          //if(digitalRead(SW)==1){
-           digitalWrite(STEP1_PIN,LOW);
-           delay(sleep);
-           digitalWrite(STEP1_PIN,HIGH);
-           delay(sleep);  
-         // }
-       }
-
-       fslide();
-       delay(sleep);
-       pickdown();
-       delay(wait);
-       bslide();
-
-       //down
-       digitalWrite(DIR1_PIN,LOW);
-       for(int i=0;i<numstep_z;i++){
-          //if(digitalRead(SW)==1){
-           digitalWrite(STEP1_PIN,HIGH);
-           delay(sleep);
-           digitalWrite(STEP1_PIN,LOW);
-           delay(sleep);
-    }
-    
-       plateround_back();
-}
-
-    if(ch == 'c'){
-    numstep_z = 6600;
-      fslide();
-      delay(sleep);
-      pickup();
-      delay(wait);
-      bslide();
-      delay(sleep);
-      plateround();
-      delay(wait);
-        
-      //up
-       digitalWrite(DIR1_PIN,HIGH);
-       for(int i=0;i<numstep_z;i++){
-          //if(digitalRead(SW)==1){
-           digitalWrite(STEP1_PIN,LOW);
-           delay(sleep);
-           digitalWrite(STEP1_PIN,HIGH);
-           delay(sleep);  
-         // }
-       }
-
-       fslide();
-       delay(sleep);
-       pickdown();
-       delay(wait);
-       bslide();
-
-       //down
-       digitalWrite(DIR1_PIN,LOW);
-       for(int i=0;i<numstep_z;i++){
-          //if(digitalRead(SW)==1){
-           digitalWrite(STEP1_PIN,HIGH);
-           delay(sleep);
-           digitalWrite(STEP1_PIN,LOW);
-           delay(sleep);
-    }
-    
-       plateround_back();
-}
-
-    if(ch == 'd'){
-    numstep_z = 8800;
-      fslide();
-      delay(sleep);
-      pickup();
-      delay(wait);
-      bslide();
-      delay(sleep);
-      plateround();
-      delay(wait);
-        
-      //up
-       digitalWrite(DIR1_PIN,HIGH);
-       for(int i=0;i<numstep_z;i++){
-          //if(digitalRead(SW)==1){
-           digitalWrite(STEP1_PIN,LOW);
-           delay(sleep);
-           digitalWrite(STEP1_PIN,HIGH);
-           delay(sleep);  
-         // }
-       }
-
-       fslide();
-       delay(sleep);
-       pickdown();
-       delay(wait);
-       bslide();
-
-       //down
-       digitalWrite(DIR1_PIN,LOW);
-       for(int i=0;i<numstep_z;i++){
-          //if(digitalRead(SW)==1){
-           digitalWrite(STEP1_PIN,HIGH);
-           delay(sleep);
-           digitalWrite(STEP1_PIN,LOW);
-           delay(sleep);
-    }
-    
-       plateround_back();
-}
 
 }
 
@@ -213,7 +105,6 @@ void z_slot(char ch){
 
 void plateround(){
       //if(ch == 'z'){
-       numstep_plate = 500;
         digitalWrite(DIR3_PIN,HIGH);
         for(int i=0;i<numstep_plate;i++){
            digitalWrite(STEP3_PIN,LOW);
@@ -227,7 +118,6 @@ void plateround(){
   
   void plateround_back(){
       //if(ch == 'z'){
-       numstep_plate = 500;
         digitalWrite(DIR3_PIN,LOW);
         for(int i=0;i<numstep_plate;i++){
            digitalWrite(STEP3_PIN,HIGH);
@@ -277,9 +167,4 @@ void plateround(){
            digitalWrite(STEP1_PIN,LOW);
            delay(sleep);
        }   
-  }
-  
-
-
-
-
+}
