@@ -1,4 +1,3 @@
-
 #Smart Car Park Capsule By sinister_30N4
 #!/usr/bin/python
 
@@ -24,14 +23,14 @@ slot = 0
 
 def take_photo():
     global filename
-    filename = datetime.now().strftime('%Y-%m-%d %H:%M:%S.jpg')
+    filename = ('%s.PNG' % (park_id))
+    #filename = datetime.now().strftime('%Y-%m-%d %H:%M:%S.jpg')
     camera.start_preview(alpha=190)
     sleep(1)
     camera.capture("/home/pi/SCPpic/{0}".format(filename))
     camera.stop_preview()
     print("Old Flag = ",flag)
     print("Now flag = ",flag + 1)
-    take_update()
 
 
 def writeNumber(value):
@@ -43,6 +42,7 @@ def readNumber():
     return number
 
 def take_update():
+    global park_id
     # Open database connection
     db = MySQLdb.connect("172.26.0.21","s5735512160_556","9OrpLgX6","s5735512160_556" )
 
@@ -175,8 +175,8 @@ def take_update():
         nowtime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 
-        sql = "UPDATE park SET park_status = '%s' WHERE park_id = '%s' " % ('Busy', park_id)
-        cursor.execute(sql)
+        #sql = "UPDATE park SET park_status = '%s' WHERE park_id = '%s' " % ('Busy', park_id)
+        #cursor.execute(sql)
 
         sql1 = "INSERT INTO carstatus(park_id, car_pic, time_in) \
                  VALUES ('%s', '%s', '%s' )" % \
@@ -206,16 +206,18 @@ def take_update():
             writeNumber(ord(i))
             time.sleep(.1)
 
-            writeNumber(int(0x0A))
+            #writeNumber(int(0x0A))
 
         for i in data_list2:
             #Sends to the Slaves
             writeNumber(ord(i))
             time.sleep(.1)
 
-            writeNumber(int(0x0A))
+            #writeNumber(int(0x0A))
 
-button.when_pressed = take_photo
+    take_photo()
+
+button.when_pressed = take_update
 print ("Ready !!")
 
 while True:  
