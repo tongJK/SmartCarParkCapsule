@@ -3,6 +3,7 @@
 from tkinter import *
 from tkinter import messagebox
 from PIL import Image, ImageTk
+from datetime import datetime
 import tkinter as tk
 import MySQLdb
 import time
@@ -47,15 +48,16 @@ def take_update(name):
         results = cursor.fetchall()
         for row in results:
             ridx = row[0]
-            uidx = row[1]
+            pidx = row[1]
             tcx = row[2]
             tbx = row[3]
             sotp = row[4]
-            pidx = row[5]
+            uidx = row[5]
+
 
             if (otp == sotp):
                 
-              state +1
+              state + 1
               
               sql1 = "DELETE FROM carstatus WHERE park_id = '%s'" % (pidx)
               cursor.execute(sql1)
@@ -63,15 +65,17 @@ def take_update(name):
               sql2 = "UPDATE user SET park_id = '-' WHERE park_id = '%s'" % (pidx)
               cursor.execute(sql2)
 
-              sq3 = "UPDATE park SET park_status = '%s' WHERE park_id = '%s' " % ('Empty', pidx)
-              cursor.execute(sq3)
+              sql3 = "UPDATE park SET park_status = '%s' WHERE park_id = '%s' " % ('Empty', pidx)
+              cursor.execute(sql3)
 
               messagebox.showinfo("Contact Us", "Your OTP is Accept\nClick OK to continue.")
-              res = 90
+
+              floor = 23
 
               # I2C section ------------------------------------------------------------------------------------
 
-              data_list = list(chr(res))
+              data_list = list(chr(floor))
+              
               for i in data_list:
                    # Sends to the Slaves
                    writeNumber(ord(i))
@@ -135,39 +139,153 @@ def take_res(namet):
             if (otpt == sotpt):
                 
               state = 1
-              sql1 = "SELECT *FROM online_reserve WHERE status = '%s'" % ('success')
+              sql1 = "SELECT *FROM online_reserve " 
               try:
                   # Execute the SQL command
-                  cursor.execute(sql)
+                  cursor.execute(sql1)
                   # Fetch all the rows in a list of lists.
-                  results = cursor.fetchall()
-                  for row in results:
-                    idx = row[0]
-                    ptx = row[1]
-                    pex = row[2]
-                    pbx = row[3]
-                    qtx = row[4]
-                    ress = row[5]
+                  resultsi = cursor.fetchall()
+                  for rowi in resultsi:
+                    idxi = rowi[0]
+                    ptxi = rowi[1]
+                    pexi = rowi[2]
+                    pbxi = rowi[3]
+                    qtxi = rowi[4]
+                    ress = rowi[5]
+
+                    sql4 = "SELECT *FROM park WHERE park_status = '%s'" % ('Empty')
+                    try:
+                       # Execute the SQL command
+                       cursor.execute(sql4)
+                       # Fetch all the rows in a list of lists.
+                       resultsy = cursor.fetchall()
+                       for rowy in resultsy:
+                          park_id = rowy[0]
+                          park_status = rowy[1]
+                      
+                    except:
+                       print ("Error: unable to fecth data")
+
+                    print ("park_id=%s --- park_status = %s" % \
+                                (park_id,park_status))
+
+                    if (park_id == 'A01') :
+                               floor = 11
+                    elif (park_id == 'A02') :
+                               floor = 12
+                    elif (park_id == 'A03') :
+                               floor = 13
+                    elif (park_id == 'A04') :
+                               floor = 14
+                    elif (park_id == 'A05') :
+                               floor = 15
+                    elif (park_id == 'A06') :
+                               floor = 16
+                    elif (park_id == 'A07') :
+                               floor = 17
+                    elif (park_id == 'A08') :
+                               floor = 18
+                    elif (park_id == 'B01') :
+                               floor = 21
+                    elif (park_id == 'B02') :
+                               floor = 22
+                    elif (park_id == 'B03') :
+                               floor = 23
+                    elif (park_id == 'B04') :
+                               floor = 24
+                    elif (park_id == 'B05') :
+                               floor = 25
+                    elif (park_id == 'B06') :
+                               floor = 26
+                    elif (park_id == 'B07') :
+                               floor = 27
+                    elif (park_id == 'B08') :
+                               floor = 28
+                    elif (park_id == 'C01') :
+                               floor = 31
+                    elif (park_id == 'C02') :
+                               floor = 32
+                    elif (park_id == 'C03') :
+                               floor = 33
+                    elif (park_id == 'C04') :
+                               floor = 34
+                    elif (park_id == 'C05') :
+                               floor = 35
+                    elif (park_id == 'C06') :
+                               floor = 36
+                    elif (park_id == 'C07') :
+                               floor = 37
+                    elif (park_id == 'C08') :
+                               floor = 38
+                    elif (park_id == 'D01') :
+                               floor = 41
+                    elif (park_id == 'D02') :
+                               floor = 42
+                    elif (park_id == 'D03') :
+                               floor = 43
+                    elif (park_id == 'D04') :
+                               floor = 44
+                    elif (park_id == 'D05') :
+                               floor = 45
+                    elif (park_id == 'D06') :
+                               floor = 46
+                    elif (park_id == 'D07') :
+                               floor = 47
+                    elif (park_id == 'D08') :
+                               floor = 48
+                               
+                    else :
+                               floor = None 
+                           
+
+                    if (floor == None) :
+                        print ("Sorry, Our park is FULL!!!")
+                    else :
+                        frr = floor/10
+                        sll = floor%10
+                        print ("Floor : %d Slot : %d " % \
+                                  (frr,sll))
+
+                        global nowtime
+                        nowtime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+
+                        sql6 = "INSERT INTO carstatus(park_id, car_pic, time_in) \
+                                 VALUES ('%s', '%s', '%s' )" % \
+                       ( park_id, park_id,nowtime)
+                        cursor.execute(sql6)
+
+                        sql7 = "INSERT INTO payment(park_id, time_in, amount) \
+                                 VALUES ('%s', '%s', %d )" % \
+                       ( park_id,nowtime, 0)
+                        cursor.execute(sql7)
+
+    
+                        print ("Now Slot %s is  = %s" % \
+                                    (park_id,'Busy'))
+                        print(" ---------------------------------------- ")
+
+
+                        data_list = list(chr(floor))
+                        for i in data_list:
+                            #Sends to the Slaves
+                            writeNumber(ord(i))
+                            time.sleep(.1)
+                    
 
               except:
-                    print ("Error: unable to fecth data")
+                    print ("Error: in inner fecth data ")
 
-              sql2 = "UPDATE online_reserve SET reserve_total = '%s' " % (ress-1)
-              cursor.execute(sql2)
 
               messagebox.showinfo("Contact Us", "Your OTP is Accept\nClick OK to continue.")
-              res = 90
 
-              # I2C section ------------------------------------------------------------------------------------
+              sql2 = "UPDATE online_reserve SET park_empty = '%s', reserve_total = '%s' " % ((pexi+1),(ress-1))
+              cursor.execute(sql2)
 
-              data_list = list(chr(res))
-              for i in data_list:
-                   # Sends to the Slaves
-                   writeNumber(ord(i))
-                   time.sleep(.1)
 
             else:
               state = 0
+              messagebox.showerror("Error", "Your OTP is wrong, Please Re-Enter or contact us")
 
             print("\nReserve from user is %s" % otpt)
             print("Reserve from server is %s" % sotpt)
@@ -178,6 +296,7 @@ def take_res(namet):
 
             
     print ("SOTP DONE!!!")
+    print(" ---------------------------------------- ")
 
     
     db.commit()
@@ -238,10 +357,10 @@ class StartPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent, bg="lightskyblue")
         self.controller = controller
-        label = tk.Label(self, text="Welcome !!", fg="hot pink", bg="lightskyblue", font=("Times", 60, "bold italic"))
+        label = tk.Label(self, text="Welcome !!", fg="hot pink", bg="lightskyblue", font=("Times", 70, "bold italic"))
         label.pack(side="top", fill="x", pady=10)
 
-        lb2 = tk.Label(self, text="Smart Car Park", fg="hot pink", bg="lightskyblue", font=("Times", 60, "bold italic"))
+        lb2 = tk.Label(self, text="Smart Car Park", fg="hot pink", bg="lightskyblue", font=("Times", 70, "bold italic"))
         lb2.pack(side="top", fill="x", pady=10)
 
         label = tk.Label(self, text="1.Park your car in receive slot, lock your car", bg="lightskyblue",
@@ -257,11 +376,12 @@ class StartPage(tk.Frame):
         lb2.pack(side="bottom")
 
 
-        button1 = tk.Button(self, text="Car Deposit", bd=15, font=("Times", 70, "bold italic"), bg="dodgerblue",
+        button1 = tk.Button(self, text="Car Deposit", bd=15, font=("Times", 50, "bold italic"), bg="dodgerblue",
                             command=lambda: controller.show_frame("PageOne"))
-        button2 = tk.Button(self, text="Reservations", bd=15, font=("Times", 70, "bold italic"), bg="mediumspringgreen",
+
+        button2 = tk.Button(self, text="Reservations", bd=15, font=("Times", 50, "bold italic"), bg="mediumspringgreen",
                             command=lambda: controller.show_frame("PageRes"))
-        button3 = tk.Button(self, text="Retake Car", bd=15, font=("Times", 70, "bold italic"), bg="coral",
+        button3 = tk.Button(self, text="Retake Car", bd=15, font=("Times", 50, "bold italic"), bg="coral",
                             command=lambda: controller.show_frame("PageTwo"))
         button1.pack(pady=(10, 10))
         button2.pack(pady=(10, 10))
@@ -371,7 +491,7 @@ class PageQR(tk.Frame):
         img.image = render
         img.place(x=550, y=300)
 
-        button = tk.Button(self, text="Click when Done", font=("Times", 30, "bold"), bd=10, bg="tomato", height=4,
+        button = tk.Button(self, text="Click when Done", font=("Times", 20, "bold"), bd=10, bg="tomato", height=3,
                            width=20, command=lambda: controller.show_frame("StartPage"))
         button.pack(pady=(450, 10))
 
