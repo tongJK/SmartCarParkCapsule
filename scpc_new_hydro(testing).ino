@@ -238,11 +238,13 @@ void receiveData(int byteCount) {
    Serial.print(numstep_z);
    Serial.print("\n\n");
 
-   if(flr < 4)
+   if(flr < 4){
     flr = flr-4;
     res_slot(flr,slt);
-   else
+   }
+   else{
     z_slot(flr,slt);
+   }
 }  
 
 void sendData() {
