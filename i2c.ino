@@ -1,41 +1,37 @@
-
 #include <Wire.h>
+
+//Slave Address for the Communication
 #define SLAVE_ADDRESS 0x04
 
-char positions[2];
-char f;
+char number[50];
 int state = 0;
-int flr = 0;
-int slt = 0;
 
-
+//Code Initialization
 void setup() {
+  // initialize i2c as slave
   Serial.begin(9600);
   Wire.begin(SLAVE_ADDRESS);
+  // define callbacks for i2c communication
   Wire.onReceive(receiveData);
   //  Wire.onRequest(sendData);
 }
 
 void loop() {
   delay(100);
-} 
+} // end loop
 
-
+// callback for received data
 void receiveData(int byteCount) {
   int i = 0;
   while (Wire.available()) {
-    positions[i] = Wire.read(); 
+    number[i] = Wire.read();
     i++;
-    
   }
-  positions[i] = '\0';
-  f = positions[0];
-  Serial.print(positions);
-  Serial.print(f/10);
+  number[i] = '\0';
+  Serial.print(number);
+}  // end while
 
-}  
-
+// callback for sending data
 void sendData() {
-  Wire.write(positions);
+  Wire.write(number);
 }
-

@@ -1,4 +1,3 @@
-
 #Smart Car Park Capsule By sinister_30N4
 #!/usr/bin/python
 
@@ -24,14 +23,12 @@ slot = 0
 
 def take_photo():
     global filename
-    filename = datetime.now().strftime('%Y-%m-%d %H:%M:%S.jpg')
+    filename = ('%s.PNG' % (park_id))
+    #filename = datetime.now().strftime('%Y-%m-%d %H:%M:%S.jpg')
     camera.start_preview(alpha=190)
     sleep(1)
     camera.capture("/home/pi/SCPpic/{0}".format(filename))
     camera.stop_preview()
-    print("Old Flag = ",flag)
-    print("Now flag = ",flag + 1)
-    take_update()
 
 
 def writeNumber(value):
@@ -43,6 +40,7 @@ def readNumber():
     return number
 
 def take_update():
+    global park_id
     # Open database connection
     db = MySQLdb.connect("172.26.0.21","s5735512160_556","9OrpLgX6","s5735512160_556" )
 
@@ -66,101 +64,70 @@ def take_update():
                 (park_id,park_status))
 
     if (park_id == 'A01') :
-               floor = 49
-               slot = 49
+               floor = 11
     elif (park_id == 'A02') :
-               floor = 49
-               slot = 50
+               floor = 12
     elif (park_id == 'A03') :
-               floor = 49
-               slot = 51
+               floor = 13
     elif (park_id == 'A04') :
-               floor = 49
-               slot = 52
+               floor = 14
     elif (park_id == 'A05') :
-               floor = 49
-               slot = 53
+               floor = 15
     elif (park_id == 'A06') :
-               floor = 49
-               slot = 54
+               floor = 16
     elif (park_id == 'A07') :
-               floor = 49
-               slot = 55
+               floor = 17
     elif (park_id == 'A08') :
-               floor = 49
-               slot = 56
+               floor = 18
     elif (park_id == 'B01') :
-               floor = 50
-               slot = 49
+               floor = 21
     elif (park_id == 'B02') :
-               floor = 50
-               slot = 50
+               floor = 22
     elif (park_id == 'B03') :
-               floor = 50
-               slot = 51
+               floor = 23
     elif (park_id == 'B04') :
-               floor = 50
-               slot = 52
+               floor = 24
     elif (park_id == 'B05') :
-               floor = 50
-               slot = 53
+               floor = 25
     elif (park_id == 'B06') :
-               floor = 50
-               slot = 54
+               floor = 26
     elif (park_id == 'B07') :
-               floor = 50
-               slot = 55
+               floor = 27
     elif (park_id == 'B08') :
-               floor = 50
-               slot = 56
+               floor = 28
     elif (park_id == 'C01') :
-               floor = 51
-               slot = 49
+               floor = 31
     elif (park_id == 'C02') :
-              floor = 51
-              slot = 50
+               floor = 32
     elif (park_id == 'C03') :
-               floor = 51
-               slot = 51
+               floor = 33
     elif (park_id == 'C04') :
-               floor = 51
-               slot = 52
+               floor = 34
     elif (park_id == 'C05') :
-               floor = 51
-               slot = 53
+               floor = 35
     elif (park_id == 'C06') :
-               floor = 51
-               slot = 54
+               floor = 36
     elif (park_id == 'C07') :
-               floor = 51
-               slot = 55
+               floor = 37
     elif (park_id == 'C08') :
-               floor = 51
-               slot = 56
+               floor = 38
     elif (park_id == 'D01') :
-               floor = 52
-               slot = 49
+               floor = 41
     elif (park_id == 'D02') :
-               floor = 52
-               slot = 50
+               floor = 42
     elif (park_id == 'D03') :
-               floor = 52
-               slot = 51
+               floor = 43
     elif (park_id == 'D04') :
-               floor = 52
-               slot = 52
+               floor = 44
     elif (park_id == 'D05') :
-               floor = 52
-               slot = 53
+               floor = 45
     elif (park_id == 'D06') :
-               floor = 52
-               slot = 54
+               floor = 46
     elif (park_id == 'D07') :
-               floor = 52
-               slot = 55
+               floor = 47
     elif (park_id == 'D08') :
-               floor = 52
-               slot = 56
+               floor = 48
+               
     else :
                floor = None 
            
@@ -168,8 +135,10 @@ def take_update():
     if (floor == None) :
         print ("Sorry, Our park is FULL!!!")
     else :
-        print ("Floor : %d Slot : %d" % \
-                  (floor, slot))
+        frr = floor/10
+        sll = floor%10
+        print ("Floor : %d Slot : %d " % \
+                  (frr,sll))
 
         global nowtime
         nowtime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -200,22 +169,15 @@ def take_update():
         db.close()
 
         data_list = list(chr(floor))
-        data_list2 = list(chr(slot))
         for i in data_list:
             #Sends to the Slaves
             writeNumber(ord(i))
             time.sleep(.1)
 
-            writeNumber(int(0x0A))
 
-        for i in data_list2:
-            #Sends to the Slaves
-            writeNumber(ord(i))
-            time.sleep(.1)
+    take_photo()
 
-            writeNumber(int(0x0A))
-
-button.when_pressed = take_photo
+button.when_pressed = take_update
 print ("Ready !!")
 
 while True:  

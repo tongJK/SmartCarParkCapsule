@@ -1,3 +1,6 @@
+#include <Wire.h>
+
+#define SLAVE_ADDRESS 0x04
 #define DIR1_PIN 2
 #define STEP1_PIN 3
 #define DIR2_PIN 4
@@ -10,6 +13,10 @@
 int numstep_z = 2200;
 int numstep_plate = 25;*/
 
+int state = 0;
+int flr,slt;
+char fr;
+
 int sleep = 1;
 int wait = 1000;
 int numstep_x = 4000 ;
@@ -19,8 +26,6 @@ int microstep = 200;
 
 char ch;
 int i,j;
-int flr;
-int slt;
 
 
 void z_slot(char ch);
@@ -35,29 +40,16 @@ void setup(){
     pinMode(STEP3_PIN, OUTPUT);
     
     Serial.begin(9600);
+    Wire.begin(SLAVE_ADDRESS);
+    Wire.onReceive(receiveData);
     
 }
 
 void loop(){
-   ch = Serial.read();   
-   z_slot(ch);   
-
-   flr = ch/10;
-   slt = ch%10;
-   
-   if(flr == 1)
-     numstep_z = 0;
-   if(flr == 2)
-     numstep_z = 2200;
-   if(flr == 3)
-     numstep_z = 4400;
-   if(flr == 4)
-     numstep_z = 6600;
-
-   numstep_plate = numstep_plate*slt ;
+   delay(100);   
 }
 
-void z_slot(char ch){
+void z_slot(char x, char y){
   
       fslide();
       delay(sleep);
@@ -167,4 +159,41 @@ void plateround(){
            digitalWrite(STEP1_PIN,LOW);
            delay(sleep);
        }   
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void receiveData(int byteCount) { 
+    fr = Wire.read();
+
+    flr = fr/10;
+    slt = fr%10;
+
+   Serial.print("FLOOR :");
+   Serial.print(flr);
+   Serial.print("\n");
+   Serial.print("SLOT :");
+   Serial.print(slt);
+   Serial.print("\n");
+
+   if(flr == 1)
+     numstep_z = 0;
+   if(flr == 2)
+     numstep_z = 2200;
+   if(flr == 3)
+     numstep_z = 4400;
+   if(flr == 4)
+     numstep_z = 6600;
+
+   numstep_plate = numstep_plate*slt ;
+
+   Serial.print("numstep_z :");
+   Serial.print(numstep_z);
+   Serial.print("\n\n");
+
+   z_slot(flr,slt);
+}  
+
+void sendData() {
+  Wire.write(fr);
 }
