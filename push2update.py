@@ -15,7 +15,6 @@ address = 0x04
 camera = PiCamera()
 button = Button(14)
 
-flag = 0
 filename = ''
 position = 2
 floor = 0
@@ -144,8 +143,8 @@ def take_update():
         nowtime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 
-        sql = "UPDATE park SET park_status = '%s' WHERE park_id = '%s' " % ('Busy', park_id)
-        cursor.execute(sql)
+        #sql = "UPDATE park SET park_status = '%s' WHERE park_id = '%s' " % ('Busy', park_id)
+        #cursor.execute(sql)
 
         sql1 = "INSERT INTO carstatus(park_id, car_pic, time_in) \
                  VALUES ('%s', '%s', '%s' )" % \
