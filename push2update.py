@@ -42,7 +42,7 @@ def take_update():
     global park_id
     # Open database connection
     db = MySQLdb.connect("172.26.0.21","s5735512160_556","9OrpLgX6","s5735512160_556" )
-
+    #db = MySQLdb.connect("172.0.1.1","s5735512160_556","9OrpLgX6","s5735512160_556" )
     # prepare a cursor object using cursor() method
     cursor = db.cursor()
 
