@@ -19,10 +19,10 @@ char fr;
 
 int sleep = 1;
 int wait = 1000;
-int numstep_x = 4000 ;
+int numstep_x = 3300 ;
 int numstep_z ;
-int numstep_plate = 25;
-int microstep = 200;
+int numstep_plate ;
+int microstep = 1200;
 
 char ch;
 int i,j;
@@ -57,7 +57,7 @@ void z_slot(char x, char y){
       delay(wait);
       bslide();
       delay(sleep);
-      plateround();
+      plateround(numstep_plate);
       delay(wait);
       
       //up
@@ -87,15 +87,59 @@ void z_slot(char x, char y){
            delay(sleep);
     }
     
-       plateround_back();
+       plateround_back(numstep_plate);
 
+}
+
+
+void res_slot(char x, char y){
+  
+      plateround(numstep_plate);
+      delay(wait);
+
+      //up
+       digitalWrite(DIR1_PIN,HIGH);
+       for(int i=0;i<numstep_z;i++){
+          //if(digitalRead(SW)==1){
+           digitalWrite(STEP1_PIN,LOW);
+           delay(sleep);
+           digitalWrite(STEP1_PIN,HIGH);
+           delay(sleep);  
+         // }
+       }
+      
+       fslide();
+       delay(sleep);
+       pickup();
+       delay(wait);
+       bslide();
+       delay(wait);
+
+      //down
+       digitalWrite(DIR1_PIN,LOW);
+       for(int i=0;i<numstep_z;i++){
+          //if(digitalRead(SW)==1){
+           digitalWrite(STEP1_PIN,HIGH);
+           delay(sleep);
+           digitalWrite(STEP1_PIN,LOW);
+           delay(sleep);
+    }
+      
+      plateround_back(numstep_plate);
+      delay(wait);
+      
+      fslide();
+      delay(sleep);
+      pickdown();
+      delay(wait);
+      bslide();
 
 }
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void plateround(){
+void plateround(int rnd){
       //if(ch == 'z'){
         digitalWrite(DIR3_PIN,HIGH);
         for(int i=0;i<numstep_plate;i++){
@@ -108,7 +152,7 @@ void plateround(){
   
   }
   
-  void plateround_back(){
+  void plateround_back(int brnd){
       //if(ch == 'z'){
         digitalWrite(DIR3_PIN,LOW);
         for(int i=0;i<numstep_plate;i++){
@@ -179,19 +223,43 @@ void receiveData(int byteCount) {
    if(flr == 1)
      numstep_z = 0;
    if(flr == 2)
-     numstep_z = 2200;
+     numstep_z = 4350;
    if(flr == 3)
-     numstep_z = 4400;
+     numstep_z = 7250;
    if(flr == 4)
-     numstep_z = 6600;
+     numstep_z = 8750;
 
-   numstep_plate = numstep_plate*slt ;
+   if(slt == 1)
+     numstep_plate = 0;
+   if(slt == 2)
+     numstep_plate = 180;
+   if(slt == 3)
+     numstep_plate = 360;
+   if(slt == 4)
+     numstep_plate = 550;
+   if(slt == 5)
+     numstep_plate = 810;
+   if(slt == 6)
+     numstep_plate = 990;
+   if(slt == 7)
+     numstep_plate = 1150;
+   if(slt == 8)
+     numstep_plate = 1400;
+
+   if(flr > 4){
+    flr = flr-4;
+    res_slot(flr,slt);
+   }
+   else{
+    z_slot(flr,slt);
+   }
 
    Serial.print("numstep_z :");
    Serial.print(numstep_z);
    Serial.print("\n\n");
-
-   z_slot(flr,slt);
+   Serial.print("numstep_plate :");
+   Serial.print(numstep_plate);
+   Serial.print("\n\n");
 }  
 
 void sendData() {
