@@ -4,6 +4,8 @@ from tkinter import *
 from tkinter import messagebox
 from PIL import Image, ImageTk
 from datetime import datetime
+from picamera import PiCamera
+from time import sleep
 import tkinter as tk
 import MySQLdb
 import time
@@ -15,12 +17,22 @@ otp = None
 sotp = None
 bus = smbus.SMBus(1)
 address = 0x04
+camera = PiCamera()
+filename = ''
 # --- Function Section -------------------------------------------------------------------------------------------------
 
 def writeNumber(value):
     bus.write_byte(address, value)
     return -1
 
+def take_photo():
+    global filename
+    filename = ('%s.PNG' % (picname))
+    #filename = datetime.now().strftime('%Y-%m-%d %H:%M:%S.jpg')
+    camera.start_preview(alpha=190)
+    sleep(1)
+    camera.capture("/home/pi/SCPpic/{0}".format(filename))
+    camera.stop_preview()
 
 def take_update(name):
 
@@ -68,9 +80,94 @@ def take_update(name):
               sql3 = "UPDATE park SET park_status = '%s' WHERE park_id = '%s' " % ('Empty', pidx)
               cursor.execute(sql3)
 
+              sql4 = "DELETE FROM payment WHERE park_id = '%s'" % (pidx)
+              cursor.execute(sql4)
+
+              sql5 = "DELETE FROM paymentlist WHERE park_id = '%s'" % (pidx)
+              cursor.execute(sql5)
+
               messagebox.showinfo("Contact Us", "Your OTP is Accept\nClick OK to continue.")
 
-              floor = 23
+
+              print ("park_id=%s " % \
+                    (pidx))
+
+              if (pidx == 'A01') :
+                   floor = 51
+              elif (pidx == 'A02') :
+                   floor = 52
+              elif (pidx == 'A03') :
+                   floor = 53
+              elif (pidx == 'A04') :
+                   floor = 54
+              elif (pidx == 'A05') :
+                   floor = 55
+              elif (pidx == 'A06') :
+                   floor = 56
+              elif (pidx == 'A07') :
+                   floor = 57
+              elif (pidx == 'A08') :
+                   floor = 58
+              elif (pidx == 'B01') :
+                   floor = 61
+              elif (pidx == 'B02') :
+                   floor = 62
+              elif (pidx == 'B03') :
+                   floor = 63
+              elif (pidx == 'B04') :
+                   floor = 64
+              elif (pidx == 'B05') :
+                   floor = 65
+              elif (pidx == 'B06') :
+                   floor = 66
+              elif (pidx == 'B07') :
+                   floor = 67
+              elif (pidx == 'B08') :
+                   floor = 68
+              elif (pidx == 'C01') :
+                   floor = 71
+              elif (pidx == 'C02') :
+                   floor = 72
+              elif (pidx == 'C03') :
+                   floor = 73
+              elif (pidx == 'C04') :
+                   floor = 74
+              elif (pidx == 'C05') :
+                   floor = 75
+              elif (pidx == 'C06') :
+                   floor = 76
+              elif (pidx == 'C07') :
+                   floor = 77
+              elif (pidx == 'C08') :
+                   floor = 78
+              elif (pidx == 'D01') :
+                   floor = 81
+              elif (pidx == 'D02') :
+                   floor = 82
+              elif (pidx == 'D03') :
+                   floor = 83
+              elif (pidx == 'D04') :
+                   floor = 84
+              elif (pidx == 'D05') :
+                   floor = 85
+              elif (pidx == 'D06') :
+                   floor = 86
+              elif (pidx == 'D07') :
+                   floor = 87
+              elif (pidx == 'D08') :
+                   floor = 88
+                               
+              else :
+                   floor = None 
+                           
+
+              if (floor == None) :
+                  print ("Sorry, Our park is FULL!!!")
+              else :
+                  frr = floor/10
+                  sll = floor%10
+                  print ("Floor : %d Slot : %d " % \
+                     (frr,sll))
 
               # I2C section ------------------------------------------------------------------------------------
 
@@ -98,6 +195,7 @@ def take_update(name):
     else:
         state = state
     print ("SOTP DONE!!!")
+    print(" ---------------------------------------- ")
 
     
     db.commit()
@@ -108,7 +206,8 @@ def take_update(name):
 def take_res(namet):
 
     global otpt
-    global  sotpt
+    global sotpt
+    global picname
 
     otpt = e2.get()
     namet = e2.get()
@@ -122,10 +221,10 @@ def take_res(namet):
     # prepare a cursor object using cursor() method
     cursor = db.cursor()
 
-    sql = "SELECT *FROM reserve WHERE reserve_status = '%s'" % ('success')
+    sql6 = "SELECT *FROM reserve WHERE reserve_status = '%s'" % ('success')
     try:
         # Execute the SQL command
-        cursor.execute(sql)
+        cursor.execute(sql6)
         # Fetch all the rows in a list of lists.
         results = cursor.fetchall()
         for row in results:
@@ -153,10 +252,10 @@ def take_res(namet):
                     qtxi = rowi[4]
                     ress = rowi[5]
 
-                    sql4 = "SELECT *FROM park WHERE park_status = '%s'" % ('Empty')
+                    sql7 = "SELECT *FROM park WHERE park_status = '%s'" % ('Empty')
                     try:
                        # Execute the SQL command
-                       cursor.execute(sql4)
+                       cursor.execute(sql7)
                        # Fetch all the rows in a list of lists.
                        resultsy = cursor.fetchall()
                        for rowy in resultsy:
@@ -238,6 +337,9 @@ def take_res(namet):
                                floor = None 
                            
 
+                    picname = park_id
+                    take_photo()
+                    
                     if (floor == None) :
                         print ("Sorry, Our park is FULL!!!")
                     else :
@@ -250,37 +352,39 @@ def take_res(namet):
                         nowtime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 
-                        sql6 = "INSERT INTO carstatus(park_id, car_pic, time_in) \
+                        sql8 = "INSERT INTO carstatus(park_id, car_pic, time_in) \
                                  VALUES ('%s', '%s', '%s' )" % \
                        ( park_id, park_id,nowtime)
-                        cursor.execute(sql6)
+                        cursor.execute(sql8)
 
-                        sql7 = "INSERT INTO payment(park_id, time_in, amount) \
+                        sql9 = "INSERT INTO payment(park_id, time_in, amount) \
                                  VALUES ('%s', '%s', %d )" % \
                        ( park_id,nowtime, 0)
-                        cursor.execute(sql7)
+                        cursor.execute(sql9)
+
+                        sql10 = "DELETE FROM reserve WHERE otp = '%s'" % (otpt)
+                        cursor.execute(sql10)
 
     
                         print ("Now Slot %s is  = %s" % \
                                     (park_id,'Busy'))
-                        print(" ---------------------------------------- ")
-
+                        
 
                         data_list = list(chr(floor))
                         for i in data_list:
                             #Sends to the Slaves
                             writeNumber(ord(i))
                             time.sleep(.1)
-                    
+
 
               except:
                     print ("Error: in inner fecth data ")
 
-
+              
               messagebox.showinfo("Contact Us", "Your OTP is Accept\nClick OK to continue.")
 
-              sql2 = "UPDATE online_reserve SET park_empty = '%s', reserve_total = '%s' " % ((pexi+1),(ress-1))
-              cursor.execute(sql2)
+              sql11 = "UPDATE online_reserve SET park_empty = '%s', reserve_total = '%s' " % ((pexi+1),(ress-1))
+              cursor.execute(sql11)
 
 
             else:
@@ -293,8 +397,9 @@ def take_res(namet):
 
     except:
         print ("Error: unable to fecth data")
+      
+    #take_photo()
 
-            
     print ("SOTP DONE!!!")
     print(" ---------------------------------------- ")
 
